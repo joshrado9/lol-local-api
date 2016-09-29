@@ -26,6 +26,7 @@ public class Main extends Application
 	public void start(Stage primaryStage) throws Exception
 	{
 		//make a display.
+		RiotAPICalls.initialize();
 		mainTabPane = new TabPane();
 
 		homeTab = home.initializeTab();
@@ -35,8 +36,9 @@ public class Main extends Application
 		mainTabPane.getSelectionModel().select(0);
 
 		Scene scene = new Scene(mainTabPane);
+		primaryStage.setHeight(400.0);
+		primaryStage.setWidth(400.0);
 		primaryStage.setTitle("LOL Project");
-		primaryStage.setScene(scene);
 
 		ChangeListener<Number> widthListener = new ChangeListener<Number> ()
 		{
@@ -52,6 +54,7 @@ public class Main extends Application
 		};
 		scene.widthProperty().addListener(heightListener);
 
+		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 }

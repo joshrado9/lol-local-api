@@ -1,12 +1,7 @@
 package com.rado.app.leagueproject;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
@@ -23,8 +18,7 @@ public class Home
 		Tab settingsTab = new Tab("Home");
 		VBox settingsVBox = new VBox(5.0);
 		TextField textFieldSummonerName = new TextField();
-		ComboBox<String> comboBoxRegion = new ComboBox<String>(FXCollections.observableArrayList("br", "eune", "euw", "jp", "kr", "lan", "las", "na", "oce", "tr", "ru"));
-		Map<String, String> regionMap = new HashMap<String, String>();
+		ComboBox<String> comboBoxRegion = new ComboBox<String>(FXCollections.observableArrayList(RiotAPICalls.getRegions()));
 
 		Label summonerLabel = new Label("Summoner Search");
 		Label regionLabel = new Label("Select Region");
@@ -36,7 +30,10 @@ public class Home
 			if (validateName(name))
 			{
 				//valid name
-				getSummonerByName(name, region);
+				SummonerPage sp = new SummonerPage(name, region);
+				Tab summonerTab = sp.initializeTab();
+				summonerTab.setClosable(true);
+				Main.mainTabPane.getTabs().add(summonerTab);
 				//!highlight text field
 
 			}
@@ -57,27 +54,5 @@ public class Home
 		Pattern p = Pattern.compile("^[0-9\\p{L} _\\.]+$");
 		Matcher m = p.matcher(name);
 		return m.matches();
-	}
-
-	private void getSummonerByName(String name, String region)
-	{
-		JSONObject jsonObject = RiotAPICalls.getSummonerByName(name, region);
-
-		//parse summoner json object
-		JSONObject object_type = null;
-		try
-		{
-			object_type = jsonObject.getJSONObject(name);
-			Summoner.id.set(object_type.getInt("id"));
-			Summoner.name.set(object_type.getString("name"));
-			Summoner.profileIconID.set(object_type.getInt("profileIconId"));
-			Summoner.revisionDate.set(object_type.getLong("revisionDate"));
-			Summoner.level.set(object_type.getInt("summonerLevel"));
-		}
-		catch (JSONException e)
-		{
-			System.out.println("Error: Settings, ");
-			e.printStackTrace();
-		}
 	}
 }

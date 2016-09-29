@@ -1,26 +1,36 @@
 package com.rado.app.leagueproject;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Summoner
 {
-	public static IntegerProperty id = new SimpleIntegerProperty(-1);
-	public static StringProperty name = new SimpleStringProperty("");
-	public static IntegerProperty profileIconID = new SimpleIntegerProperty(-1);;
-	public static LongProperty revisionDate = new SimpleLongProperty(-1);
-	public static IntegerProperty level = new SimpleIntegerProperty(-1);
+	private int summonerID;
+	private String summonerName;
+	private int summonerIconID;
+	private long summonerLastRevisionDate;
+	private int summonerLevel;
 
 
-	public static ListProperty<String> getObjects()
+	public Map<String, Object> getSummoner()
 	{
-		return new SimpleListProperty<String>(FXCollections.observableArrayList("id", "name", "iconID", "revisionDate", "level"));
+		Map<String, Object> summonerObject = new HashMap<String, Object>();
+
+		summonerObject.put("summonerID", summonerID);
+		summonerObject.put("summonerName", summonerName);
+		summonerObject.put("summonerIconID", summonerIconID);
+		summonerObject.put("summonerLastRevisionDate", summonerLastRevisionDate);
+		summonerObject.put("summonerLevel", summonerLevel);
+
+		return summonerObject;
+	}
+
+	public Summoner(int id, String name, int iconID, long revDate, int level)
+	{
+		this.summonerID = id;
+		this.summonerName = name;
+		this.summonerIconID = iconID;
+		this.summonerLastRevisionDate = revDate;
+		this.summonerLevel = level;
 	}
 }
