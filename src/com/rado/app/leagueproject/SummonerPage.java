@@ -2,6 +2,7 @@ package com.rado.app.leagueproject;
 
 import java.util.Map;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
@@ -12,7 +13,7 @@ public class SummonerPage
 
 	public SummonerPage(String name, String region)
 	{
-		this.summonerObject = RiotAPICalls.getSummonerByName(name, region);
+		this.summonerObject = new Summoner(RiotAPICalls.getSummonerByName(name, region), name, region);
 	}
 
 	public Tab initializeTab()
@@ -20,17 +21,25 @@ public class SummonerPage
 		Map<String, Object> summonerMap = summonerObject.getSummoner();
 
 		Tab newTab = new Tab( (String) summonerMap.get("summonerName") );
-		if (this.summonerObject != null)
+
+		VBox summonerBox = new VBox(5.0);
+
+		Label nameLabel = new Label( (String) summonerMap.get("summonerName") );
+		Label iconIDLabel = new Label( String.format("%d", summonerMap.get("summonerIconID")) );
+		Label levelLabel = new Label( String.format("%d", summonerMap.get("summonerLevel")) );
+
+		Button matchHistory = new Button("View Match History");
+		matchHistory.setOnAction(event ->
 		{
-			VBox summonerBox = new VBox(5.0);
+			MatchListPage mlp = new MatchListPage(summonerObject);
+			Tab matchListTab = mlp.initializeTab();
+			matchListTab.setClosable(true);
+			Main.mainTabPane.getTabs().add(matchListTab);
+			Main.mainTabPane.getSelectionModel().select(matchListTab);
+		});
 
-			Label nameLabel = new Label( (String) summonerMap.get("summonerName") );
-			Label iconIDLabel = new Label( String.format("%d", summonerMap.get("summonerIconID")) );
-			Label levelLabel = new Label( String.format("%d", summonerMap.get("summonerLevel")) );
-
-			summonerBox.getChildren().addAll(nameLabel, iconIDLabel, levelLabel);
-			newTab.setContent(summonerBox);
-		}
+		summonerBox.getChildren().addAll(nameLabel, iconIDLabel, levelLabel, matchHistory);
+		newTab.setContent(summonerBox);
 
 		return newTab;
 	}

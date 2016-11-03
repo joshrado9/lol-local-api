@@ -27,6 +27,7 @@ public class Main extends Application
 	{
 		//make a display.
 		RiotAPICalls.initialize();
+		RiotAPIStatic.initialize();
 		mainTabPane = new TabPane();
 
 		homeTab = home.initializeTab();

@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,46 +20,39 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RiotAPICalls
+public class RiotAPIStatic
 {
 	private static CloseableHttpClient CLIENT = HttpClients.createDefault();
-	private static Map<String, String> regionMap;
+	public static Map<Integer, ChampionDto> championList;
 
-	public static void initialize()
+	private static void initChampionList()
 	{
-		regionMap = new HashMap<String, String>();
-		regionMap.put("Brazil", "br");
-		regionMap.put("Europe Nordic & East", "eune");
-		regionMap.put("Europe West", "euw");
-		regionMap.put("Latin America North", "lan");
-		regionMap.put("Latin America South", "las");
-		regionMap.put("North America", "na");
-		regionMap.put("Oceania", "oce");
-		regionMap.put("Turkey", "tr");
-		regionMap.put("Russia", "ru");
-		regionMap.put("Japan", "jp");
-		regionMap.put("Korea", "kr");
-	}
+		String path = String.format("/api/lol/static-data/na/v1.2/champion");
+		String host = String.format("global.api.pvp.net");
+		JSONObject champListJSON = generalCallToRiot(host, path);
 
-	public static JSONObject getSummonerByName(String name, String region)
-	{
-		String regionID = getRegionID(region);
+		championList = new HashMap<Integer, ChampionDto>();
+		try
+		{
+			JSONObject champListObject = champListJSON.getJSONObject("data");
 
-		String path = String.format("/api/lol/%s/v1.4/summoner/by-name/%s", regionID, name);
-		String host = String.format("%s.api.pvp.net", regionID);
-		return generalCallToRiot(host, path);
-	}
+			Iterator<?> champListIterable = champListObject.keys();
 
-	public static JSONObject getRecentGames(int summonerID, String region)
-	{
-		String regionID = getRegionID(region);
-
-		String path = String.format("/api/lol/%s/v1.3/game/by-summoner/%d/recent", regionID, summonerID);
-		String host = String.format("%s.api.pvp.net", regionID);
-		return generalCallToRiot(host, path);
+			while(champListIterable.hasNext())
+			{
+				String key = (String) champListIterable.next();
+				ChampionDto champ = new ChampionDto(champListObject.getJSONObject(key));
+				championList.put(champ.id, champ);
+			}
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private static JSONObject generalCallToRiot(String host, String path)
@@ -111,14 +105,8 @@ public class RiotAPICalls
 		return jsonObject;
 	}
 
-	public static String getRegionID(String region)
+	public static void initialize()
 	{
-		String regionID = regionMap.get(region);
-		return regionID;
-	}
-
-	public static List<String> getRegions()
-	{
-		return new ArrayList<String>(regionMap.keySet());
+		initChampionList();
 	}
 }

@@ -34,6 +34,7 @@ public class Home
 				Tab summonerTab = sp.initializeTab();
 				summonerTab.setClosable(true);
 				Main.mainTabPane.getTabs().add(summonerTab);
+				Main.mainTabPane.getSelectionModel().select(summonerTab);
 				//!highlight text field
 
 			}
