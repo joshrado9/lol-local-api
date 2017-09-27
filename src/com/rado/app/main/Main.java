@@ -22,7 +22,8 @@ public class Main extends Application
 
 	public static enum MsgQueueIds {
 		INVALID_MSG_ID,
-		GUI_REQUEST_MSG_ID
+		GUI_REQUEST_MSG_ID,
+		SERVER_RESPONSE_MSG_ID
 	}
 
 	public static void main(String[] args)

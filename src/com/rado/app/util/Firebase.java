@@ -70,12 +70,14 @@ public class Firebase
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				Object snapshot = dataSnapshot.getValue();
-
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("msgId", Database.DatabaseQueueIds.RECV_PROFILE_MSG_ID);
-				map.put("data", snapshot);
-				JSONObject json = new JSONObject(map);
-				database.recvSummonerByName(json);
+				if (snapshot != null)
+				{
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("msgId", Database.DatabaseQueueIds.RECV_PROFILE_MSG_ID);
+					map.put("data", snapshot);
+					JSONObject json = new JSONObject(map);
+					database.recvSummonerByName(json);
+				}
 			}
 		});
 	}

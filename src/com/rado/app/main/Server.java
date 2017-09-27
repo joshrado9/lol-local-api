@@ -1,5 +1,7 @@
 package com.rado.app.main;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -55,9 +57,10 @@ public class Server implements Runnable
 				{
 					case REQ_MSG_ID:
 						//check if the value is in the database first
-						processDatabaseRequest(msg);
+						putMsgOnDatabaseQueue(msg);
 						break;
 					case RECV_MSG_ID:
+						//process database response, determine if valid
 						processDatabaseReceive(msg);
 						break;
 					default:
@@ -68,17 +71,6 @@ public class Server implements Runnable
 		}
 	}
 
-	private void processDatabaseReceive(JSONObject msg)
-	{
-
-	}
-
-	private void processDatabaseRequest(JSONObject msg)
-	{
-		JSONObject data = (JSONObject) msg.get("data");
-		this.database.putMsgOnQueue(data);
-	}
-
 	public void putMsgOnServerQueue(JSONObject msg)
 	{
 		try {
@@ -86,5 +78,25 @@ public class Server implements Runnable
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void putMsgOnDatabaseQueue(JSONObject msg)
+	{
+		JSONObject data = (JSONObject) msg.get("data");
+		this.database.putMsgOnQueue(data);
+	}
+
+	private void putMsgOnMainQueue(JSONObject msg)
+	{
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("msgId", Main.MsgQueueIds.SERVER_RESPONSE_MSG_ID);
+		map.put("data", msg);
+		JSONObject json = new JSONObject(map);
+		this.main.putMsgOnMainQueue(json);
+	}
+
+	void processDatabaseReceive(JSONObject msg)
+	{
+
 	}
 }

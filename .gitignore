@@ -3,3 +3,5 @@
 *.jar
 dragontail-7.16.1/
 dragontail-7.9.1/
+*.class
+target/
